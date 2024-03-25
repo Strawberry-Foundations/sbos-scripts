@@ -142,8 +142,8 @@ fi
 # to disable, pass "overlay=no" on the kernel command line
 # (in /boot/cmdline.txt)
 #
-# the underlying root FS is mounted readonly on /ro
-# temporary changes are written to /rw
+# the underlying root FS is mounted readonly on /system
+# changes are written to /user
 
 EOF
 
