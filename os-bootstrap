@@ -116,6 +116,9 @@ def help_message():
     {CYAN}{BOLD}initramfs <subcmd>:{C_RESET} Install & configure the Initramfs
      {BOLD}↳ {MAGENTA}Subcommands:{C_RESET}
             {CYAN}{BOLD}install{C_RESET}  Installs the required initramfs tools{C_RESET}
+             {BOLD}↳ {MAGENTA}Options:{C_RESET}
+                {CYAN}{BOLD}-t, --target <dir>{C_RESET}   Root directory for installing initramfs-tools  {GREEN}{BOLD}[default: $PWD]{C_RESET}
+                {CYAN}{BOLD}-d, --data <device>{C_RESET}  Block device for configuring your data directory
     
 """)
 
