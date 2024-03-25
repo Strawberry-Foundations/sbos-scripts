@@ -64,7 +64,7 @@ LIGHT_BLACK = "\033[90m"  # Alias of GRAY
 PURPLE = "\033[35m"  # Alias of MAGENTA
 STYLE_RESET = "\033[0m"  # Alias of C_RESET
 
-VERSION = "1.1.5"
+VERSION = "1.1.6"
 
 
 def check_root_permissions():
