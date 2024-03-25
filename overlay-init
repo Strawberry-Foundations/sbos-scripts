@@ -1,10 +1,6 @@
 #!/bin/sh
 # /etc/initramfs-tools/scripts/init-bottom/overlay
 
-log_begin_msg "[SBOS_OVERLAYFS:START] --- Starting overlayfs mounting process ---"
-
-USERDATA="/dev/data_partition"
-
 PREREQ=""
 prereqs()
 {
@@ -19,6 +15,10 @@ case $1 in
 esac
 
 . /scripts/functions
+
+USERDATA="/dev/data_partition"
+
+log_begin_msg "[SBOS_OVERLAYFS:START] --- Starting overlayfs mounting process ---"
 
 # Should we run at all?
 
