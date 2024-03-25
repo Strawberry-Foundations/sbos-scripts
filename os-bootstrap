@@ -260,7 +260,7 @@ def initramfs(_args: Args):
             with open(f"{os.getcwd()}/sbos-scripts-main/overlay-init", "r") as _initramfs_script:
                 irfs_init = _initramfs_script.read()
 
-            patched_irfs_init = irfs_init.replace("/dev/sda2", _args.dt_data_dir)
+            patched_irfs_init = irfs_init.replace("/dev/data_partition", _args.dt_data_dir)
 
             with open(f"{os.getcwd()}/sbos-scripts-main/overlay-init", "w") as _initramfs_script:
                 _initramfs_script.write(patched_irfs_init)
