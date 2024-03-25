@@ -268,8 +268,8 @@ def initramfs(_args: Args):
                 _initramfs_script.write(patched_irfs_init)
 
             print(f"{BOLD}{GREEN}=>{RESET} Installing initramfs-tools to {path} ...{C_RESET}")
-            subprocess.run(f"mv initramfs/hook {path}/etc/initramfs-tools/hooks/overlay", shell=True)
-            subprocess.run(f"mv initramfs/init {path}/etc/initramfs-tools/scripts/init-bottom/overlay", shell=True)
+            subprocess.run(f"mv initramfs/overlay-hook {path}/etc/initramfs-tools/hooks/overlay", shell=True)
+            subprocess.run(f"mv initramfs/overlay-init {path}/etc/initramfs-tools/scripts/init-bottom/overlay", shell=True)
 
             with open(f"{os.getcwd()}/initramfs/regen-initramfs", "w") as _initramfs_script:
                 _initramfs_script.write("update-initramfs -u")
