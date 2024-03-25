@@ -1,6 +1,10 @@
 #!/bin/sh
 # /etc/initramfs-tools/scripts/init-bottom/overlay
 
+log_begin_msg "[SBOS_OVERLAYFS:START] --- Starting overlayfs mounting process ---"
+
+USERDATA="/dev/data_partition"
+
 PREREQ=""
 prereqs()
 {
@@ -32,7 +36,8 @@ done
 
 if [ "$OVERLAY" != "yes" ]
 then
-    log_warning_msg "[SBOS_OVERLAYFS] overlay not enabled, leaving the root fs alone"
+    log_warning_msg "[SBOS_OVERLAYFS] Overlay not enabled, leaving the root fs alone"
+    log_begin_msg "[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
     exit 0
 fi
 
@@ -40,7 +45,8 @@ log_begin_msg "[SBOS_OVERLAYFS] Remounting root fs in overlay mode"
 
 if ! modprobe -qb overlay
 then
-    log_failure_msg "[SBOS_OVERLAYFS] can't load overlay module"
+    log_failure_msg "[SBOS_OVERLAYFS] Cannot load overlay module"
+    log_begin_msg "[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
     exit 0
 fi
 
@@ -65,15 +71,17 @@ do
   [ -d "${dir}" ] || mkdir -p "${dir}"
   if [ $? -ne 0 ]
   then
-    log_failure_msg "[SBOS_OVERLAYFS] can't create ${dir}"
+    log_failure_msg "[SBOS_OVERLAYFS] Cannot create ${dir}"
+    log_begin_msg "[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
     exit 0
   fi
 done
 
 # set up /user
-if ! mount /dev/sda2 /user
+if ! mount ${USERDATA} /user
 then
-    log_failure_msg "[SBOS_OVERLAYFS] can't mount user data on /user"
+    log_failure_msg "[SBOS_OVERLAYFS] Cannot mount user data (${USERDATA}) on /user"
+    log_begin_msg "[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
     exit 0
 fi
 
@@ -81,7 +89,8 @@ for dir in /user/upper /user/work
 do
   if ! mkdir -p ${dir}
   then
-      log_failure_msg "[SBOS_OVERLAYFS] overlay: can't create ${dir}"
+      log_failure_msg "[SBOS_OVERLAYFS] overlay: Cannot create ${dir}"
+      log_begin_msg "[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
       exit 0
   fi
 done
@@ -89,7 +98,8 @@ done
 # set up /syytem
 if ! mount -o move "${rootmnt}" /system
 then
-    log_failure_msg "[SBOS_OVERLAYFS] can't move root fs to /system"
+    log_failure_msg "[SBOS_OVERLAYFS] Cannot move root fs to /system"
+    log_begin_msg "[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
     exit 0
 fi
 
@@ -101,11 +111,13 @@ then
     # try to recover
     if ! mount -o move /system "${rootmnt}"
     then
-        panic "[SBOS_OVERLAYFS] recovering the old root fs failed, panicking"
+        panic "[SBOS_OVERLAYFS] Recovering the old root fs failed, panicking"
+        log_begin_msg "[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
         exit 0
     fi
 
     log_warning_msg "[SBOS_OVERLAYFS] overlay: moved regular rootfs back into place and continuing"
+    log_begin_msg "[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
     exit 0
 fi
 
@@ -114,7 +126,8 @@ do
   [ -d "${dir}" ] || mkdir -p "${dir}"
   if [ $? -ne 0 ]
   then
-    log_failure_msg "[SBOS_OVERLAYFS] can't create ${dir}"
+    log_failure_msg "[SBOS_OVERLAYFS] Cannot create ${dir}"
+    log_begin_msg "[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
     exit 0
   fi
 done
@@ -122,13 +135,15 @@ done
 # move /system and /user into place so we can access them later
 if ! mount -o move /system "${rootmnt}/system"
 then
-    log_failure_msg "[SBOS_OVERLAYFS] can't move /system to ${rootmnt}/system"
+    log_failure_msg "[SBOS_OVERLAYFS] Cannot move /system to ${rootmnt}/system"
+    log_begin_msg "[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
     exit 0
 fi
 
 if ! mount -o move /user "${rootmnt}/user"
 then
-    log_failure_msg "[SBOS_OVERLAYFS] can't move /user to ${rootmnt}/user"
+    log_failure_msg "[SBOS_OVERLAYFS] Cannot move /user to ${rootmnt}/user"
+    log_begin_msg "[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
     exit 0
 fi
 
