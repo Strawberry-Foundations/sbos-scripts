@@ -77,7 +77,25 @@ do
   fi
 done
 
+
+log_begin_msg "[SBOS_OVERLAYFS:DEBUG] --- DEBUG MODE --- \n"
+
+log_begin_msg "[SBOS_OVERLAYFS:CMD] --- $ ls / ---"
 ls /
+
+log_begin_msg "[SBOS_OVERLAYFS:CMD] --- $ ls /system ---"
+ls /system
+
+log_begin_msg "[SBOS_OVERLAYFS:CMD] --- $ ls /user ---"
+ls /user
+
+log_begin_msg "[SBOS_OVERLAYFS:CMD] --- $ lsblk ---"
+lsblk
+
+log_begin_msg "[SBOS_OVERLAYFS:CMD] --- $ sh ---"
+sh
+
+
 
 # set up /user
 if ! mount ${USERDATA} /user
