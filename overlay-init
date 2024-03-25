@@ -77,6 +77,8 @@ do
   fi
 done
 
+ls /
+
 # set up /user
 if ! mount ${USERDATA} /user
 then
