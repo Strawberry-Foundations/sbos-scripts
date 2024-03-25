@@ -1,0 +1,12 @@
+#!/bin/bash
+
+yellow=$(echo -e '\e[1;33m')
+bold=$(echo -e '\033[1m')
+reset=$(echo -e '\033(B\033[m')
+
+# Check for root permissions
+if [[ "$(id -u)" != 0 ]]; then
+  echo -e "${yellow}[!] ${bold}Consider using 'sudo' for sbos-chroot to have full control over your new system${reset}"
+fi
+
+bwrap --bind "${1}" / --dev /dev --bind /sys /sys --bind /proc /proc --bind /tmp /tmp bash
