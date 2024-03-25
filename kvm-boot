@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# statics
+BLACK_FORE="\e[30m"
+YELLOW_FORE="\e[33m"
+YELLOW_BACK="\e[43m"
+RED_FORE="\e[31m"
+RED_BACK="\e[41m"
+RESET="\e[0m"
+
+if [ ! -f "./disk.img" ]; then
+    echo -e "${BLACK_FORE}${YELLOW_BACK}WARNING${RESET} ${YELLOW_FORE}Disk image 'disk.img' doesn't exist. Creating...${RESET}"
+    qemu-img create -f qcow2 disk.img 64G
+fi
+
+iso_filename=$(ls StrawberryOS-*-snapshot.*.iso | sort -n | tail -1)
+
+if [ ! -f "$iso_filename" ]; then
+        echo -e "${BLACK_FORE}${RED_BACK}ERROR${RESET} ${RED_FORE}CD-ROM image doesn't exist. You will need to download a StrawberryOS iso image.${RESET}"
+        exit 1
+fi
+
+qemu-system-x86_64 \
+-enable-kvm \
+-cpu host \
+-bios /usr/share/ovmf/OVMF.fd \
+-m 8192 \
+-hda disk.img \
+-cdrom "$iso_filename" \
+-boot d
