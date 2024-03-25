@@ -104,6 +104,7 @@ def help_message():
     {CYAN}{BOLD}help:{C_RESET} Prints this message
     {CYAN}{BOLD}about:{C_RESET} About os-bootstrap
     {CYAN}{BOLD}auth:{C_RESET} Authenticate with your Strawberry ID
+    {CYAN}{BOLD}chroot <dir>:{C_RESET} chroot into a directory
 
     {CYAN}{BOLD}install <packages>:{C_RESET} Installs StrawberryOS and the specified package features
      {BOLD}↳ {MAGENTA}Options:{C_RESET}
@@ -111,7 +112,7 @@ def help_message():
 
     {CYAN}{BOLD}configure:{C_RESET} Configure StrawberryOS
      {BOLD}↳ {MAGENTA}Options:{C_RESET}
-            {CYAN}{BOLD}-???, --???{C_RESET}             ???
+            {CYAN}{BOLD}-???, --???{C_RESET}             ???        
 
     {CYAN}{BOLD}initramfs <subcmd>:{C_RESET} Install & configure the Initramfs
      {BOLD}↳ {MAGENTA}Subcommands:{C_RESET}
@@ -294,6 +295,19 @@ def initramfs(_args: Args):
             print(f"{BOLD}{GREEN}=>{RESET} Finished initramfs configuration ...{C_RESET}")
 
 
+def chroot(_args: Args):
+    path = os.path.abspath(_args[1])
+
+    if not os.path.exists(path):
+        print(f"{RED}[!] {BOLD}Path '{path}' not found{C_RESET}")
+        exit(1)
+
+    subprocess.run(f"mount --bind /dev {path}/dev", shell=True)
+    subprocess.run(f"mount --bind /sys {path}/sys", shell=True)
+    subprocess.run(f"mount --bind /proc {path}/proc", shell=True)
+    subprocess.run(f"chroot {path}", shell=True)
+
+
 args = Args()
 
 if len(args.args) < 1:
@@ -305,5 +319,7 @@ match args.args[0]:
         install(args)
     case "initramfs":
         initramfs(args)
+    case "chroot":
+        chroot(args)
     case "help" | _:
         help_message()
