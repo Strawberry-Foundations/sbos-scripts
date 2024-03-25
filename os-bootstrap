@@ -259,12 +259,12 @@ def initramfs(_args: Args):
 
             print(f"{BOLD}{GREEN}=>{RESET} Patching initramfs-tools ...{C_RESET}")
 
-            with open(f"{os.getcwd()}/initramfs/init", "r") as _initramfs_script:
+            with open(f"{os.getcwd()}/initramfs/overlay-init", "r") as _initramfs_script:
                 irfs_init = _initramfs_script.read()
 
             patched_irfs_init = irfs_init.replace("/dev/sda2", _args.dt_data_dir)
 
-            with open(f"{os.getcwd()}/initramfs/init", "w") as _initramfs_script:
+            with open(f"{os.getcwd()}/initramfs/overlay-init", "w") as _initramfs_script:
                 _initramfs_script.write(patched_irfs_init)
 
             print(f"{BOLD}{GREEN}=>{RESET} Installing initramfs-tools to {path} ...{C_RESET}")
