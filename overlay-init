@@ -51,15 +51,15 @@ fi
 #
 # We want:
 #
-#  /              initramfs
-#  ${rootmnt}     overlayfs using ${rootmnt}/ro and ${rootmnt}/rw
-#  ${rootmnt}/ro  readonly-mounted real root FS  (mounted from device ${ROOT})
-#  ${rootmnt}/rw  tmpfs that will be used for changes
-#  ${rootmnt}/rw/upper  overlayfs upper dir
-#  ${rootmnt}/rw/work   overlayfs work dir
+#  /                      initramfs
+#  ${rootmnt}             overlayfs using ${rootmnt}/system and ${rootmnt}/user
+#  ${rootmnt}/system      readonly-mounted real root FS  (mounted from device ${ROOT})
+#  ${rootmnt}/user        consistent file system used for user data
+#  ${rootmnt}/user/upper  overlayfs upper dir
+#  ${rootmnt}/user/work   overlayfs work dir
 #
 
-# create and mount /ro and /rw on the initramfs, we will move them later
+# create and mount /system and /user on the initramfs, we will move them later
 for dir in /system /user
 do
   [ -d "${dir}" ] || mkdir -p "${dir}"
@@ -70,10 +70,10 @@ do
   fi
 done
 
-# set up /rw
+# set up /user
 if ! mount /dev/sda2 /user
 then
-    log_failure_msg "[SBOS_OVERLAYFS] can't mount tmpfs on /rw"
+    log_failure_msg "[SBOS_OVERLAYFS] can't mount user data on /user"
     exit 0
 fi
 
@@ -86,17 +86,17 @@ do
   fi
 done
 
-# set up /ro
+# set up /syytem
 if ! mount -o move "${rootmnt}" /system
 then
-    log_failure_msg "[SBOS_OVERLAYFS] can't move root fs to /ro"
+    log_failure_msg "[SBOS_OVERLAYFS] can't move root fs to /system"
     exit 0
 fi
 
 # set up an overlayfs on rootmnt
 if ! mount -t overlay -o lowerdir=/system,upperdir=/user/upper,workdir=/user/work rootfs "${rootmnt}"
 then
-    log_failure_msg "[SBOS_OVERLAYFS] can't move root fs to /ro"
+    log_failure_msg "[SBOS_OVERLAYFS] can't move root fs to /system"
 
     # try to recover
     if ! mount -o move /system "${rootmnt}"
@@ -119,16 +119,16 @@ do
   fi
 done
 
-# move /ro and /rw into place so we can access them later
+# move /system and /user into place so we can access them later
 if ! mount -o move /system "${rootmnt}/system"
 then
-    log_failure_msg "[SBOS_OVERLAYFS] can't move /ro to ${rootmnt}/ro"
+    log_failure_msg "[SBOS_OVERLAYFS] can't move /system to ${rootmnt}/system"
     exit 0
 fi
 
 if ! mount -o move /user "${rootmnt}/user"
 then
-    log_failure_msg "[SBOS_OVERLAYFS] can't move /rw to ${rootmnt}/rw"
+    log_failure_msg "[SBOS_OVERLAYFS] can't move /user to ${rootmnt}/user"
     exit 0
 fi
 
