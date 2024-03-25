@@ -92,9 +92,6 @@ ls /user
 log_begin_msg "[SBOS_OVERLAYFS:CMD] --- $ lsblk ---"
 lsblk
 
-log_begin_msg "[SBOS_OVERLAYFS:CMD] --- $ sh ---"
-sh
-
 
 
 # set up /user
