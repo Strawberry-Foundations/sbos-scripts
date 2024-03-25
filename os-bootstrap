@@ -64,7 +64,7 @@ LIGHT_BLACK = "\033[90m"  # Alias of GRAY
 PURPLE = "\033[35m"  # Alias of MAGENTA
 STYLE_RESET = "\033[0m"  # Alias of C_RESET
 
-VERSION = "1.0.0"
+VERSION = "1.1.5"
 
 
 def check_root_permissions():
@@ -283,6 +283,10 @@ def initramfs(_args: Args):
 
             print(f"{BOLD}{GREEN}=>{RESET} Updating initramfs ...{C_RESET}")
             subprocess.run(cmd + " regen-initramfs", shell=True)
+
+            print(f"{BOLD}{GREEN}=>{RESET} Cleaning up ...{C_RESET}")
+            subprocess.run(f"rm -rf sbos-scripts-main", shell=True)
+            subprocess.run(f"rm -rf main.tar* ", shell=True)
 
             print(f"{BOLD}{GREEN}=>{RESET} Finished initramfs configuration ...{C_RESET}")
 
