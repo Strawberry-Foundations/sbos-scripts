@@ -174,7 +174,7 @@ def install(_args: Args):
     if not _args.dt_ignore_bootstrap:
         subprocess.run(
             f"""/usr/sbin/debootstrap \
-            --include=apt-utils,apt-transport-https,ca-certificates,bash,bzip2,initramfs-tools-core,initramfs-tools,linux-image-amd64,busybox-static trixie \
+            --include=apt-utils,apt-transport-https,ca-certificates,bash,bzip2,initramfs-tools-core,initramfs-tools,linux-image-amd64,busybox-static,network-manager trixie \
             {path} https://deb.debian.org/debian""", shell=True
         )
 
