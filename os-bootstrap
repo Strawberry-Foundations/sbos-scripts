@@ -126,6 +126,11 @@ def help_message():
 
 def install(_args: Args):
     package_list = {
+        "init":
+            "dbus,dbus-bin,dbus-daemon,dbus-session-bus-common,dbus-system-bus-common,dbus-user-session,libpam-systemd,\
+apt-utils,apt-transport-https,ca-certificates,bash,bzip2,initramfs-tools-core,initramfs-tools,linux-image-amd64,\
+busybox-static,network-manager",
+
         "base": "zstd grub-efi kbd locales locales-all bash-completion sudo",
         "base-dev": "git gcc make g++ build-essential linux-headers-amd64",
         "utils": "wget curl neofetch htop btop",
@@ -174,7 +179,7 @@ def install(_args: Args):
     if not _args.dt_ignore_bootstrap:
         subprocess.run(
             f"""/usr/sbin/debootstrap \
-            --include=apt-utils,apt-transport-https,ca-certificates,bash,bzip2,initramfs-tools-core,initramfs-tools,linux-image-amd64,busybox-static,network-manager trixie \
+            --include={package_list["init"]} trixie \
             {path} https://deb.debian.org/debian""", shell=True
         )
 
