@@ -1,2 +1,6 @@
 # sbos-scripts
-Useful tools &amp; scripts for StrawberryOS
+Useful tools & scripts for StrawberryOS
+
+# Tools from other repositories
+The following tools included in this repositories are not from us: 
+- neofetch (https://github.com/hykilpikonna/hyfetch)
