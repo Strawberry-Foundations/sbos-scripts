@@ -1,10 +1,9 @@
 #!/bin/sh
 # /etc/initramfs-tools/scripts/init-bottom/overlay
 
-PREREQ=""
-prereqs()
-{
-    echo "$PREREQ"
+PREQ=""
+prereqs() {
+    echo "$PREQ"
 }
 
 case $1 in
@@ -16,12 +15,15 @@ esac
 
 . /scripts/functions
 
+# -- User data partition --
+# Change this to your user data partition if not done
 USERDATA="/dev/data_partition"
 
-log_begin_msg "[SBOS_OVERLAYFS:START] --- Starting overlayfs mounting process --- \n"
+VERSION="1.0.2"
 
-# Should we run at all?
+log_begin_msg "[STRAWBERRY_INIT] --- Starting overlayfs mounting process (sbos-init v${VERSION}) ---"
 
+# Check if overlay is enabled
 OVERLAY="no"
 for arg in $(cat /proc/cmdline)
 do
@@ -36,27 +38,27 @@ done
 
 if [ "$OVERLAY" != "yes" ]
 then
-    log_warning_msg "[SBOS_OVERLAYFS] Overlay not enabled, leaving the root fs alone"
-    log_begin_msg "\n[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
+    log_warning_msg "[STRAWBERRY_INIT] Warning: Overlay not enabled, leaving the root fs alone"
     exit 0
 fi
 
-log_begin_msg "[SBOS_OVERLAYFS] Remounting root fs in overlay mode"
+log_begin_msg "[STRAWBERRY_INIT] Remounting root fs in overlay mode"
 
+# Load overlay kernel module
 if ! modprobe -qb overlay
 then
-    log_failure_msg "[SBOS_OVERLAYFS] Cannot load overlay module"
-    log_begin_msg "\n[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
+    log_failure_msg "[STRAWBERRY_INIT] Error: Cannot load overlayfs kernel module"
+    sleep 0.1
+    log_begin_msg "[STRAWBERRY_INIT] --- Exited overlayfs mounting process ---"
     exit 0
 fi
 
-# initially we have:
-
+# -- OverlayFS mount process --
+# Initially we have:
 #  /           initramfs
 #  ${rootmnt}  readonly-mounted real root FS  (mounted from device ${ROOT})
 #
 # We want:
-#
 #  /                      initramfs
 #  ${rootmnt}             overlayfs using ${rootmnt}/system and ${rootmnt}/user
 #  ${rootmnt}/system      readonly-mounted real root FS  (mounted from device ${ROOT})
@@ -71,34 +73,19 @@ do
   [ -d "${dir}" ] || mkdir -p "${dir}"
   if [ $? -ne 0 ]
   then
-    log_failure_msg "[SBOS_OVERLAYFS] Cannot create ${dir}"
-    log_begin_msg "\n[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
+    log_failure_msg "[STRAWBERRY_INIT] Error: Cannot create ${dir}"
+    sleep 0.1
+    log_begin_msg "[STRAWBERRY_INIT] --- Exited overlayfs mounting process ---"
     exit 0
   fi
 done
 
-
-log_begin_msg "[SBOS_OVERLAYFS:DEBUG] --- DEBUG MODE --- \n"
-
-log_begin_msg "[SBOS_OVERLAYFS:CMD] --- $ ls / ---"
-ls /
-
-log_begin_msg "[SBOS_OVERLAYFS:CMD] --- $ ls /system ---"
-ls /system
-
-log_begin_msg "[SBOS_OVERLAYFS:CMD] --- $ ls /user ---"
-ls /user
-
-log_begin_msg "[SBOS_OVERLAYFS:CMD] --- $ lsblk ---"
-lsblk
-
-
-
 # set up /user
 if ! mount ${USERDATA} /user
 then
-    log_failure_msg "[SBOS_OVERLAYFS] Cannot mount user data (${USERDATA}) on /user"
-    log_begin_msg "\n[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
+    log_failure_msg "[STRAWBERRY_INIT] Error: Cannot mount user data (${USERDATA}) on /user"
+    sleep 0.1
+    log_begin_msg "[STRAWBERRY_INIT] --- Exited overlayfs mounting process ---"
     exit 0
 fi
 
@@ -106,8 +93,9 @@ for dir in /user/upper /user/work
 do
   if ! mkdir -p ${dir}
   then
-      log_failure_msg "[SBOS_OVERLAYFS] overlay: Cannot create ${dir}"
-      log_begin_msg "\n[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
+      log_failure_msg "[STRAWBERRY_INIT] Error: Cannot create ${dir}"
+      sleep 0.1
+      log_begin_msg "[STRAWBERRY_INIT] --- Exited overlayfs mounting process ---"
       exit 0
   fi
 done
@@ -115,26 +103,29 @@ done
 # set up /syytem
 if ! mount -o move "${rootmnt}" /system
 then
-    log_failure_msg "[SBOS_OVERLAYFS] Cannot move root fs to /system"
-    log_begin_msg "\n[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
+    log_failure_msg "[STRAWBERRY_INIT] Error: Cannot move root fs to /system"
+    sleep 0.1
+    log_begin_msg "[STRAWBERRY_INIT] --- Exited overlayfs mounting process ---"
     exit 0
 fi
 
 # set up an overlayfs on rootmnt
 if ! mount -t overlay -o lowerdir=/system,upperdir=/user/upper,workdir=/user/work rootfs "${rootmnt}"
 then
-    log_failure_msg "[SBOS_OVERLAYFS] can't move root fs to /system"
+    log_failure_msg "[STRAWBERRY_INIT] can't move root fs to /system"
 
     # try to recover
     if ! mount -o move /system "${rootmnt}"
     then
-        panic "[SBOS_OVERLAYFS] Recovering the old root fs failed, panicking"
-        log_begin_msg "\n[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
+        panic "[STRAWBERRY_INIT] Error: Recovering the old root fs failed, panicking"
+        sleep 0.1
+        log_begin_msg "[STRAWBERRY_INIT] --- Exited overlayfs mounting process ---"
         exit 0
     fi
 
-    log_warning_msg "[SBOS_OVERLAYFS] overlay: moved regular rootfs back into place and continuing"
-    log_begin_msg "\n[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
+    log_warning_msg "[STRAWBERRY_INIT] Error: moved regular rootfs back into place and continuing"
+    sleep 0.1
+    log_begin_msg "[STRAWBERRY_INIT] --- Exited overlayfs mounting process ---"
     exit 0
 fi
 
@@ -143,8 +134,9 @@ do
   [ -d "${dir}" ] || mkdir -p "${dir}"
   if [ $? -ne 0 ]
   then
-    log_failure_msg "[SBOS_OVERLAYFS] Cannot create ${dir}"
-    log_begin_msg "\n[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
+    log_failure_msg "[STRAWBERRY_INIT] Error: Cannot create ${dir}"
+    sleep 0.1
+    log_begin_msg "[STRAWBERRY_INIT] --- Exited overlayfs mounting process ---"
     exit 0
   fi
 done
@@ -152,15 +144,17 @@ done
 # move /system and /user into place so we can access them later
 if ! mount -o move /system "${rootmnt}/system"
 then
-    log_failure_msg "[SBOS_OVERLAYFS] Cannot move /system to ${rootmnt}/system"
-    log_begin_msg "\n[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
+    log_failure_msg "[STRAWBERRY_INIT] Error: Cannot move /system to ${rootmnt}/system"
+    sleep 0.1
+    log_begin_msg "[STRAWBERRY_INIT] --- Exited overlayfs mounting process ---"
     exit 0
 fi
 
 if ! mount -o move /user "${rootmnt}/user"
 then
-    log_failure_msg "[SBOS_OVERLAYFS] Cannot move /user to ${rootmnt}/user"
-    log_begin_msg "\n[SBOS_OVERLAYFS:END] --- Exited overlayfs mounting process ---"
+    log_failure_msg "[STRAWBERRY_INIT] Error: Cannot move /user to ${rootmnt}/user"
+    sleep 0.1
+    log_begin_msg "[STRAWBERRY_INIT] --- Exited overlayfs mounting process ---"
     exit 0
 fi
 
