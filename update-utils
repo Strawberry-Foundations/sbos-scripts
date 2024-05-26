@@ -21,4 +21,8 @@ echo -e "${green}=>${reset} Updating neofetch ..."
 wget https://raw.githubusercontent.com/Strawberry-Foundations/sbos-scripts/main/neofetch -O /usr/local/bin/neofetch &> /dev/null
 chmod a+x /usr/local/bin/neofetch
 
+echo -e "${green}=>${reset} Updating somgr ..."
+wget https://github.com/Strawberry-Foundations/somgr/releases/download/latest/somgr-x86_64 -O /usr/local/bin/somgr &> /dev/null
+chmod a+x /usr/local/bin/somgr
+
 echo -e "${green}=>${reset} Finished util update"
