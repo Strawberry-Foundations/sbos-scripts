@@ -274,12 +274,12 @@ busybox-static,network-manager,wget,curl",
     log(Log.PACKAGE, f"Installing StrawberryOS utils ...")
 
     subprocess.run(
-        cmd + "wget https://raw.githubusercontent.com/Strawberry-Foundations/sbos-scripts/main/update-utils -O /usr/local/bin/update-utils",
+        cmd + " wget https://raw.githubusercontent.com/Strawberry-Foundations/sbos-scripts/main/update-utils -O /usr/local/bin/update-utils",
         shell=True
     )
 
-    subprocess.run(cmd + "chmod a+x /usr/local/bin/update-utils", shell=True)
-    subprocess.run(cmd + "update-utils", shell=True)
+    subprocess.run(cmd + " chmod a+x /usr/local/bin/update-utils", shell=True)
+    subprocess.run(cmd + " update-utils", shell=True)
 
     log(Log.SUCCESS, f"Finished bootstrap of base system{C_RESET}")
 
