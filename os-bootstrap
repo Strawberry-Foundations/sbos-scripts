@@ -108,7 +108,7 @@ class Args:
         self.args = sys.argv[1:]
 
         self.ignore_root = False
-        self.ignore_bootstrap = True
+        self.ignore_bootstrap = False
 
         self.install_dir = os.getcwd()
         self.data_dir = ""
