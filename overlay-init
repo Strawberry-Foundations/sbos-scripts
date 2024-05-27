@@ -19,9 +19,9 @@ esac
 # Change this to your user data partition if not done
 USERDATA="/dev/data_partition"
 
-VERSION="1.0.2"
+VERSION="1.0.3"
 
-log_begin_msg "[STRAWBERRY_INIT] --- Starting overlayfs mounting process (sbos-init v${VERSION}) ---"
+log_begin_msg "[STRAWBERRY_INIT] --- Starting OverlayFS mounting process (sbos-init v${VERSION}) ---"
 
 # Check if overlay is enabled
 OVERLAY="no"
