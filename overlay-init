@@ -162,14 +162,14 @@ fi
 
 {
     cat <<EOF
-# overlayfs mount is in use; changes to the root FS are
-# written to tmpfs and will be discarded on reboot.
+# StrawberryOS' OverlayFS is in use;
+# All changes to the root file system are written to your user partition.
 #
 # to disable, pass "overlay=no" on the kernel command line
 # (in /boot/cmdline.txt)
 #
-# the underlying root FS is mounted readonly on /system
-# changes are written to /user
+# - the underlying root file system is mounted readonly on /system
+# - changes are written to /user
 
 EOF
 
