@@ -375,7 +375,6 @@ def initramfs(cmd_args: Args):
 
             handle_command_error(command.returncode)
 
-
             command = subprocess.run(f"chmod a+x {path}/etc/initramfs-tools/hooks/overlay", shell=True)
             handle_command_error(command.returncode)
 
