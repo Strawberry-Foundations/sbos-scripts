@@ -28,4 +28,4 @@ qemu-system-x86_64 \
 -m 8192 \
 -hda disk.img \
 -cdrom "$iso_filename" \
--boot d
+-boot c
