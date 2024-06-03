@@ -13,7 +13,8 @@ if [ ! -f "./disk.img" ]; then
     qemu-img create -f qcow2 disk.img 64G
 fi
 
-iso_filename=$(ls StrawberryOS-*-snapshot.*.iso | sort -n | tail -1)
+# shellcheck disable=SC2012
+iso_filename=$(ls StrawberryOS-*.iso | sort -n | tail -1)
 
 if [ ! -f "$iso_filename" ]; then
         echo -e "${BLACK_FORE}${RED_BACK}ERROR${RESET} ${RED_FORE}CD-ROM image doesn't exist. You will need to download a StrawberryOS iso image.${RESET}"
