@@ -54,7 +54,7 @@ BACK_LIGHT_MAGENTA = "\033[105m"
 BACK_LIGHT_CYAN = "\033[106m"
 BACK_LIGHT_WHITE = "\033[107m"
 
-VERSION = "1.2.2"
+VERSION = "1.2.3"
 
 
 class Log(enum.Enum):
