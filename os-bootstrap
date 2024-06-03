@@ -375,14 +375,6 @@ def initramfs(cmd_args: Args):
 
             handle_command_error(command.returncode)
 
-            with open(f"{os.getcwd()}/sbos-scripts-main/regen-initramfs", "w") as _initramfs_script:
-                _initramfs_script.write("update-initramfs -u")
-
-            command = subprocess.run(f"mv sbos-scripts-main/regen-initramfs {path}/usr/local/bin/regen-initramfs", shell=True)
-            handle_command_error(command.returncode)
-
-            command = subprocess.run(f"chmod a+x {path}/usr/local/bin/regen-initramfs", shell=True)
-            handle_command_error(command.returncode)
 
             command = subprocess.run(f"chmod a+x {path}/etc/initramfs-tools/hooks/overlay", shell=True)
             handle_command_error(command.returncode)
@@ -397,7 +389,7 @@ def initramfs(cmd_args: Args):
             handle_command_error(command.returncode)
 
             log(Log.INITRAMFS, f"Updating initramfs")
-            command = subprocess.run(cmd + " regen-initramfs", shell=True)
+            command = subprocess.run(cmd + " update-initramfs -u", shell=True)
             handle_command_error(command.returncode)
 
             log(Log.CLEANUP, f"Cleaning up ...{C_RESET}")
