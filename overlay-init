@@ -59,10 +59,10 @@ fi
 #  ${rootmnt}  readonly-mounted real root FS  (mounted from device ${ROOT})
 #
 # We want:
-#  /                      initramfs
-#  ${rootmnt}             overlayfs using ${rootmnt}/system and ${rootmnt}/user
-#  ${rootmnt}/system      readonly-mounted real root FS  (mounted from device ${ROOT})
-#  ${rootmnt}/user        consistent file system used for user data
+#  /                       initramfs
+#  ${rootmnt}              overlayfs using ${rootmnt}/system and ${rootmnt}/user
+#  ${rootmnt}/system       readonly-mounted real root FS  (mounted from device ${ROOT})
+#  ${rootmnt}/user         consistent file system used for user data
 #  ${rootmnt}/user/data    overlayfs data (upper) dir
 #  ${rootmnt}/user/.work   overlayfs work dir
 #
