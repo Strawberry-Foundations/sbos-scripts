@@ -1,0 +1,46 @@
+#!/bin/bash
+
+_command="somgr"
+
+_command_completions() {
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    
+    opts="help about shell run login lock unlock mount umount remount update reboot backup"
+
+    remount_opts="-ro --readonly -rw --readwrite"
+
+    update_opts="-y --yes"
+
+    reboot_opts="-fw --firmware"
+
+    backup_subcommands="setup restore upload add remove list status"
+
+    if [[ ${COMP_CWORD} -eq 1 ]]; then
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        return 0
+    fi
+
+    case "${prev}" in
+        remount)
+            COMPREPLY=( $(compgen -W "${remount_opts}" -- ${cur}) )
+            return 0
+            ;;
+        update)
+            COMPREPLY=( $(compgen -W "${update_opts}" -- ${cur}) )
+            return 0
+            ;;
+        reboot)
+            COMPREPLY=( $(compgen -W "${reboot_opts}" -- ${cur}) )
+            return 0
+            ;;
+        backup)
+            COMPREPLY=( $(compgen -W "${backup_subcommands}" -- ${cur}) )
+            return 0
+            ;;
+    esac
+}
+
+complete -F _command_completions $_command
