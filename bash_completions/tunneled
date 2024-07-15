@@ -1,0 +1,39 @@
+#!/bin/bash
+
+_command="tunneled"
+
+_command_completions() {
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    
+    opts="help about auth local server compose"
+
+    local_opts="-u --use -h --address -p --port -s --secret -a --auth -cp --control-port -sp --static-port"
+    server_opts="-s --secret -id --require-id -cp --control-port --min-port --max-port"
+    compose_opts="-f --file"
+
+
+    if [[ ${COMP_CWORD} -eq 1 ]]; then
+        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+        return 0
+    fi
+
+    case "${prev}" in
+        local)
+            COMPREPLY=( $(compgen -W "${local_opts}" -- ${cur}) )
+            return 0
+            ;;
+        server)
+            COMPREPLY=( $(compgen -W "${server_opts}" -- ${cur}) )
+            return 0
+            ;;
+        compose)
+            COMPREPLY=( $(compgen -W "${compose_opts}" -- ${cur}) )
+            return 0
+            ;;
+    esac
+}
+
+complete -F _command_completions $_command
