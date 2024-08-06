@@ -1098,6 +1098,13 @@ get_distro() {
                     *) distro="Manjaro Linux $(lsb_release -src)"
                 esac
 
+            elif [[ -f /etc/strawberryos_version ]]; then
+                . /etc/os-release
+                case $distro_shorthand in
+                    on|tiny) distro="StrawberryOS" ;;
+                    *) distro="StrawberryOS $VERSION"
+                esac
+
             elif [[ -f /etc/siduction-version ]]; then
                 case $distro_shorthand in
                     on|tiny) distro=Siduction ;;
